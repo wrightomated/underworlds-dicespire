@@ -3,7 +3,7 @@
     <header>
       <h2>{{ type.toUpperCase() }} DICE</h2>
       <ul class="dice-controls">
-        <li v-on:click="addDie()">Add</li>
+        <li class="control" v-on:click="addDie()">Add</li>
         <li v-on:click="removeDie()">Remove</li>
         <li v-on:click="resetDice()">Clear</li>
         <li v-on:click="rollAll()">Roll All</li>
@@ -23,12 +23,12 @@
       <div class="success-checkbox" v-for="face in uniqueFaces" v-bind:key="face">
         <label for="face">{{face}}</label>
         <input type="checkbox" :value="face" v-model="checkedResults" />
-        <span>{{getPercent(face)}}%</span>
+        <!-- <span>{{getPercent(face)}}%</span> -->
       </div>
     </div>
     <div class="result-box">
-      <div>Chance of success = {{chanceOfSuccess()}}%</div>
       <div>{{isSuccess() ? 'Success!' : 'Failure'}}</div>
+      <div>Chance of success = {{chanceOfSuccess()}}%</div>
     </div>
   </div>
 </template>
@@ -52,8 +52,8 @@ export default {
       bus: new Vue(),
       uniqueFaces: new Set(this.dieFaces),
       checkedResults: [],
-      faceProbabilities: this.calculateFaceProbabilities(),
-      what: "cake"
+      counts: this.calculateCounts(),
+      faceProbabilities: this.calculateFaceProbabilities()
     };
   },
   methods: {
@@ -73,23 +73,28 @@ export default {
       this.dice[index].value = value;
       this.success = this.isSuccess();
     },
-    calculateFaceProbabilities: function() {
-      var counts = {};
-      var probs = {};
-      var total = this.dieFaces.length;
-      this.dieFaces.forEach(x => {
-        counts[x] = (counts[x] || 0) + 1;
-      });
-      for (var key in counts) {
-        probs[key] = counts[key] / total;
-      }
-      return probs;
-    },
     getPercent: function(face) {
       return (parseFloat(this.faceProbabilities[face]) * 100).toFixed(0);
     },
+    calculateCounts: function() {
+      let counts = {};
+      this.dieFaces.forEach(x => {
+        console.log(x);
+        counts[x] = (counts[x] || 0) + 1;
+      });
+      return counts;
+    },
+    calculateFaceProbabilities: function() {
+      let probs = {};
+      const total = this.dieFaces.length;
+      for (let key in this.counts) {
+        probs[key] = this.counts[key] / total;
+      }
+      console.log(probs);
+      return probs;
+    },
     isSuccess: function() {
-      var success = false;
+      let success = false;
       if (this.dice.length < 1) {
         return false;
       }
@@ -104,16 +109,12 @@ export default {
     },
     chanceOfSuccess: function() {
       // 1 - ((length - x) ^ n / l^n)
-      var counts = {};
-      var faces = this.dieFaces.length;
-      counts = this.dieFaces.forEach(x => {
-        counts[x] = (counts[x] || 0) + 1;
-      });
-      var x = 0;
+      let faces = this.dieFaces.length;
+      let x = 0;
       this.checkedResults.forEach(res => {
-        x += counts[res];
+        x += this.counts[res];
       });
-      var prob =
+      let prob =
         1 -
         Math.pow(faces - x, this.dice.length) /
           Math.pow(faces, this.dice.length);
@@ -133,6 +134,11 @@ export default {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  cursor: pointer;
+  user-select: none;
+}
+.control {
+  cursor: pointer;
 }
 li {
   display: inline;
@@ -140,6 +146,8 @@ li {
   border-radius: 10px;
   padding: 5px 10px;
   margin-right: 10px;
+  cursor: pointer;
+  user-select: none;
 }
 header {
   grid-row-start: 1;
@@ -155,9 +163,19 @@ header {
 .check-area {
   grid-column-start: 2;
   grid-row-start: 2;
+  /* border: 1px solid; */
+  border-radius: 10px;
+  background: #eee;
+  text-align: center;
+  height: 200px;
+  vertical-align: middle;
 }
-.success-checkbox {
-  border: 1px dotted blue;
+
+.success-checkbox:first-child {
+  padding-top: 5px;
+}
+.success-checkbox:last-child {
+  padding-bottom: 5px;
 }
 .result-box {
   grid-row-start: -1;

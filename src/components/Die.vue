@@ -21,9 +21,9 @@ export default {
   },
   methods: {
     rolla: function() {
-      var ro = new roll();
-      var diceString = `[${this.dieFaces.join().replace(/,/g, "|")}]`;
-      var result = ro.roll(diceString).result;
+      const ro = new roll();
+      const diceString = `[${this.dieFaces.join().replace(/,/g, "|")}]`;
+      let result = ro.roll(diceString).result;
       this.diceroll = result;
       this.$emit("rolled", result);
     }
