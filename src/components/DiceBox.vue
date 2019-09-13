@@ -117,7 +117,6 @@ export default {
         1 -
         Math.pow(faces - x, this.dice.length) /
           Math.pow(faces, this.dice.length);
-      console.log(prob);
       return (prob * 100).toFixed(2);
     }
   }
