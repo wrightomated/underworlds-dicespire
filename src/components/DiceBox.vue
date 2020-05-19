@@ -20,15 +20,22 @@
       />
     </div>
     <div class="check-area">
-      <div class="success-checkbox" v-for="face in uniqueFaces" v-bind:key="face">
+      <div
+        class="success-checkbox"
+        v-for="face in uniqueFaces"
+        v-bind:key="face"
+      >
         <label for="face">{{ face }}</label>
         <input type="checkbox" :value="face" v-model="checkedResults" />
         <!-- <span>{{getPercent(face)}}%</span> -->
       </div>
     </div>
     <div class="result-box">
-      <div>{{isSuccess() ? 'Success!' : 'Failure'}}</div>
-      <div>Chance of success ≈ {{chanceOfSuccess()}}% Chance of 1 crit: {{chanceOfAtLeast()}}</div>
+      <div>{{ isSuccess() ? "Success!" : "Failure" }}</div>
+      <div>
+        Chance of success ≈ {{ chanceOfSuccess() }}% Chance of 1 crit:
+        {{ chanceOfAtLeast() }}
+      </div>
     </div>
   </div>
 </template>

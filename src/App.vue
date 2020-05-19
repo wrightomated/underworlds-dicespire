@@ -2,7 +2,11 @@
   <div id="app">
     <dice-box class="dice-container" type="attack" :dieFaces="attackDieFaces" />
     <dice-box class="dice-container" type="magic" :dieFaces="magicDieFaces" />
-    <dice-box class="dice-container" type="defence" :dieFaces="defenceDieFaces" />
+    <dice-box
+      class="dice-container"
+      type="defence"
+      :dieFaces="defenceDieFaces"
+    />
   </div>
 </template>
 
