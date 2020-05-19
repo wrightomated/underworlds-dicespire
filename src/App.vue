@@ -25,6 +25,10 @@ export default {
 </script>
 
 <style>
+body {
+  /* background: #555; */
+  margin: 0;
+}
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   /* -webkit-font-smoothing: antialiased; */
@@ -33,6 +37,10 @@ export default {
   margin-top: 60px;
   display: flex;
   flex-direction: column;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 20px;
 }
 .dice-container {
   flex: 1;

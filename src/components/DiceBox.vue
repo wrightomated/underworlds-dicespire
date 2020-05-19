@@ -21,14 +21,14 @@
     </div>
     <div class="check-area">
       <div class="success-checkbox" v-for="face in uniqueFaces" v-bind:key="face">
-        <label for="face">{{face}}</label>
+        <label for="face">{{ face }}</label>
         <input type="checkbox" :value="face" v-model="checkedResults" />
         <!-- <span>{{getPercent(face)}}%</span> -->
       </div>
     </div>
     <div class="result-box">
       <div>{{isSuccess() ? 'Success!' : 'Failure'}}</div>
-      <div>Chance of success = {{chanceOfSuccess()}}%</div>
+      <div>Chance of success ≈ {{chanceOfSuccess()}}% Chance of 1 crit: {{chanceOfAtLeast()}}</div>
     </div>
   </div>
 </template>
@@ -36,6 +36,7 @@
 <script>
 import Die from "./Die";
 import Vue from "vue";
+var binomial = require("binomial-probability");
 
 export default {
   name: "dice-box",
@@ -48,12 +49,12 @@ export default {
   },
   data: function() {
     return {
-      dice: [],
+      dice: [{ type: this.type, value: "?" }],
       bus: new Vue(),
       uniqueFaces: new Set(this.dieFaces),
       checkedResults: [],
       counts: this.calculateCounts(),
-      faceProbabilities: this.calculateFaceProbabilities()
+      faceProbabilities: {}
     };
   },
   methods: {
@@ -79,9 +80,9 @@ export default {
     calculateCounts: function() {
       let counts = {};
       this.dieFaces.forEach(x => {
-        console.log(x);
         counts[x] = (counts[x] || 0) + 1;
       });
+      this.faceProbabilities = this.calculateFaceProbabilities();
       return counts;
     },
     calculateFaceProbabilities: function() {
@@ -90,7 +91,6 @@ export default {
       for (let key in this.counts) {
         probs[key] = this.counts[key] / total;
       }
-      console.log(probs);
       return probs;
     },
     isSuccess: function() {
@@ -119,14 +119,19 @@ export default {
         Math.pow(faces - x, this.dice.length) /
           Math.pow(faces, this.dice.length);
       return (prob * 100).toFixed(2);
+    },
+    chanceOfAtLeast: function() {
+      // console.log(cdf(1, 3, 1 / 6));
+      return binomial.cumulative(1, 1, 5 / 6);
     }
+    // distribution
   }
 };
 </script>
 <style scoped>
 .dice-box {
   display: grid;
-  grid-template-columns: 80% 20%;
+  grid-template-columns: 1fr 100px;
   grid-template-rows: 150px 1fr 25px;
   /* min-height: 500px; */
 }
@@ -167,8 +172,8 @@ header {
   border-radius: 10px;
   background: #eee;
   text-align: center;
-  height: 200px;
   vertical-align: middle;
+  padding: 10px;
 }
 
 .success-checkbox:first-child {
